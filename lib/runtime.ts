@@ -1,7 +1,8 @@
 import { getDb } from "@/lib/db";
 import { MockInstagramClient } from "@/lib/instagram/mock";
 import { logger } from "@/lib/logger";
-import { MemoryQueue, PassthroughMediaStore, type Deps } from "@/lib/services/context";
+import { MemoryQueue, type Deps } from "@/lib/services/context";
+import { BlobMediaStore } from "@/lib/storage/media-store";
 
 let deps: Deps | undefined;
 
@@ -17,9 +18,10 @@ export function getDeps(): Deps {
   deps = {
     db: getDb(),
     ig: new MockInstagramClient(),
-    igMode: "mock",
+    // Production never fake-publishes: without a connected account the publisher fails with a clear error.
+    igMode: process.env.VERCEL_ENV === "production" ? "real" : "mock",
     queue: new MemoryQueue(),
-    media: new PassthroughMediaStore(),
+    media: new BlobMediaStore({ upload: Boolean(process.env.BLOB_READ_WRITE_TOKEN) }),
     now: () => new Date(),
     log: logger,
   };
