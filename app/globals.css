@@ -1,26 +1,193 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Dark is the default theme (matches inqi). `.light` on <html> switches to light. */
+@custom-variant dark (&:not(.light *));
+@custom-variant light (&:is(.light *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-sans);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* inqi extras */
+  --color-teal: var(--acc2);
+  --color-teal-soft: var(--acc2-soft);
+  --color-violet-soft: var(--acc-soft);
+  --color-inset: var(--inset);
+  --color-dock: var(--dock);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* inqi radii: 14 / 20 / 22 / 28 / pill */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 22px;
+  --radius-2xl: 28px;
+  --radius-3xl: 32px;
+  --radius-4xl: 40px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ---------- Dark (default) — values taken from inqi ---------- */
+:root {
+  color-scheme: dark;
+  --radius: 20px;
+
+  --bg: #0b1020;
+  --ink: #e6ecff;
+  --mute: #a3b0cf;
+  --acc: #8b7bff;
+  --acc2: #3ddcbc;
+  --on-acc: #0b1020;
+  --acc-soft: #5b3df522;
+  --acc2-soft: #22c3a629;
+  --inset: #ffffff0a;
+  --dock: #141a34e0;
+  --line: #ffffff17;
+  --glass-edge: #ffffff1f;
+  --glass-shine: linear-gradient(135deg, #ffffff2b 0, #ffffff0d 40%, #ffffff05 100%);
+  --glass-hi: inset 0 1px 0 #ffffff1a;
+  --blur: blur(18px) saturate(1.4);
+  --shadow: 0 10px 34px #0006, 0 1px 3px #0004;
+  --wash: radial-gradient(1100px 520px at 50% -10%, #1a2552 0, transparent 70%);
+
+  --background: var(--bg);
+  --foreground: var(--ink);
+  --card: #151c38cc;
+  --card-foreground: var(--ink);
+  --popover: #141a34f5;
+  --popover-foreground: var(--ink);
+  --primary: var(--acc);
+  --primary-foreground: var(--on-acc);
+  --secondary: #ffffff14;
+  --secondary-foreground: var(--ink);
+  --muted: #ffffff0f;
+  --muted-foreground: var(--mute);
+  --accent: #ffffff14;
+  --accent-foreground: var(--ink);
+  --destructive: #ff6b81;
+  --warning: #f5b84b;
+  --success: #3ddcbc;
+  --border: var(--line);
+  --input: #ffffff2e;
+  --ring: var(--acc);
+
+  --chart-1: #8b7bff;
+  --chart-2: #3ddcbc;
+  --chart-3: #f5b84b;
+  --chart-4: #ff8fb1;
+  --chart-5: #6cb6ff;
+
+  --sidebar: #0e1428e6;
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--acc);
+  --sidebar-primary-foreground: var(--on-acc);
+  --sidebar-accent: #ffffff14;
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--acc);
+}
+
+/* ---------- Light — values taken from inqi ---------- */
+.light {
+  color-scheme: light;
+
+  --bg: #f5f7fb;
+  --ink: #0f172a;
+  --mute: #5b6578;
+  --acc: #5b3df5;
+  --acc2: #22c3a6;
+  --on-acc: #ffffff;
+  --acc-soft: #5b3df522;
+  --acc2-soft: #22c3a629;
+  --inset: #ffffff80;
+  --dock: #ffffffb8;
+  --line: #0f172a12;
+  --glass-edge: #ffffffe0;
+  --glass-shine: linear-gradient(135deg, #fff9 0, #ffffff26 40%, #fff0 100%);
+  --glass-hi: inset 0 1px 0 #fffc;
+  --shadow: 0 6px 24px #1e3a8a0d, 0 1px 2px #1e3a8a0a;
+  --wash: radial-gradient(1100px 520px at 50% -10%, #dfe8ff 0, transparent 70%);
+
+  --card: #ffffffb3;
+  --popover: #fffffff5;
+  --secondary: #ffffffb3;
+  --muted: #0f172a0a;
+  --accent: #5b3df514;
+  --destructive: #e11d48;
+  --warning: #b7791f;
+  --success: #12957f;
+  --input: #0f172a26;
+
+  --chart-1: #5b3df5;
+  --chart-2: #22c3a6;
+  --chart-3: #d48a0b;
+  --chart-4: #e0457b;
+  --chart-5: #2f80ed;
+
+  --sidebar: #ffffffcc;
+  --sidebar-accent: #5b3df514;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply text-foreground;
+    background-color: var(--bg);
+    background-image: var(--wash);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-size: 15px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* inqi glass surface: use on cards, dock, dialogs */
+@utility glass {
+  background-color: var(--card);
+  background-image: var(--glass-shine);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--glass-hi), var(--shadow);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
 }
