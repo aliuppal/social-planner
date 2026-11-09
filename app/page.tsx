@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CalendarDays, CheckCircle2, LayoutGrid, Bot, ShieldCheck } from "lucide-react";
 
 const pillars = [
@@ -15,7 +16,9 @@ export default function Home() {
         <span className="text-2xl font-bold tracking-tight">
           planner<span className="text-primary">.</span>
         </span>
-        <span className="glass rounded-full px-4 py-2 text-sm text-muted-foreground">Phase 1 · service layer</span>
+        <Link href="/login" className="glass rounded-full px-5 py-2.5 text-sm font-medium">
+          Sign in
+        </Link>
       </header>
 
       <section className="flex flex-1 flex-col items-center justify-center gap-6 py-16 text-center">
@@ -45,7 +48,7 @@ export default function Home() {
       </ul>
 
       <footer className="flex items-center justify-center gap-2 pb-4 text-xs text-muted-foreground">
-        <LayoutGrid className="size-3.5" aria-hidden /> Sign-in arrives in phase 2.
+        <LayoutGrid className="size-3.5" aria-hidden /> Invite-only. Ask your account owner for access.
       </footer>
     </main>
   );
