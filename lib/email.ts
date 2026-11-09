@@ -3,15 +3,16 @@ import { logger, sanitizeError } from "@/lib/logger";
 export type Email = { to: string; subject: string; text: string; html?: string };
 
 /**
- * Sends through Resend's HTTP API when RESEND_API_KEY is set.
- * Without it (local dev), the message, including any sign-in link, is printed to the server log.
+ * Sends through Resend's HTTP API when RESEND_API_KEY is set and returns true.
+ * Without it, the message (including any sign-in link) is printed to the server log and it returns false,
+ * so callers can tell the user the email didn't actually go out.
  */
-export async function sendEmail(msg: Email): Promise<void> {
+export async function sendEmail(msg: Email): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
-    // dev only: links are single-use and short-lived
+    // no email provider configured: links are single-use and short-lived
     console.info(`\n[email:dev] to=${msg.to}\nsubject: ${msg.subject}\n${msg.text}\n`);
-    return;
+    return false;
   }
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -23,6 +24,7 @@ export async function sendEmail(msg: Email): Promise<void> {
     logger.error({ status: res.status, err: sanitizeError(body, 300) }, "email send failed");
     throw new Error(`Email could not be sent (${res.status})`);
   }
+  return true;
 }
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);

@@ -14,6 +14,8 @@ export function LoginForm({ next, linkError }: { next?: string; linkError?: stri
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(linkError ? "That sign-in link is invalid or has expired. Request a new one." : null);
   const [linkSent, setLinkSent] = useState(false);
+  // controlled so React's post-action form reset doesn't wipe it after a failed attempt
+  const [email, setEmail] = useState("");
 
   async function withPassword(form: FormData) {
     setPending(true);
@@ -45,7 +47,7 @@ export function LoginForm({ next, linkError }: { next?: string; linkError?: stri
 
       <TabsContent value="password">
         <form action={withPassword} className="grid gap-4">
-          <Field id="email" name="email" label="Email" type="email" autoComplete="email" required />
+          <Field id="email" name="email" label="Email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           <Field id="password" name="password" label="Password" type="password" autoComplete="current-password" required />
           <Button type="submit" size="lg" disabled={pending}>
             {pending ? "Signing in…" : "Sign in"}
@@ -61,7 +63,7 @@ export function LoginForm({ next, linkError }: { next?: string; linkError?: stri
           <FormMessage tone="success">If that email has an account, a sign-in link is on its way. It works once and expires in 15 minutes.</FormMessage>
         ) : (
           <form action={withLink} className="grid gap-4">
-            <Field id="link-email" name="email" label="Email" type="email" autoComplete="email" required />
+            <Field id="link-email" name="email" label="Email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
             <Button type="submit" size="lg" disabled={pending}>
               {pending ? "Sending…" : "Email me a sign-in link"}
             </Button>

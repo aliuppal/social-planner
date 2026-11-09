@@ -59,7 +59,7 @@ export function InviteForm({ brands }: { brands: BrandOpt[] }) {
       {state.error && <FormMessage>{state.error}</FormMessage>}
       {state.ok && state.url && (
         <div className="grid gap-2">
-          <FormMessage tone="success">{state.emailed ? "Invite sent. You can also share this link:" : "Invite created, but the email couldn't be sent. Share this link:"}</FormMessage>
+          <FormMessage tone="success">{state.emailed ? "Invite emailed. You can also share this link:" : "Invite created. Email isn't set up yet, so send this link yourself:"}</FormMessage>
           <div className="flex gap-2">
             <Input readOnly value={state.url} aria-label="Invite link" onFocus={(e) => e.currentTarget.select()} />
             <Button type="button" variant="outline" aria-label="Copy invite link" onClick={() => navigator.clipboard.writeText(state.url!).then(() => toast.success("Link copied"))}>

@@ -12,6 +12,7 @@ vi.mock("@/lib/email", async (orig) => ({
   ...(await orig<typeof import("@/lib/email")>()),
   sendEmail: async (m: { to: string; subject: string; text: string }) => {
     sent.push(m);
+    return true;
   },
 }));
 
@@ -55,6 +56,16 @@ describe("auth: invites, sign-in, roles", () => {
     const actor = await loadUserActor(env.db, userId);
     expect(actor).toMatchObject({ role: "client", brandIds: [brand.id] });
     expect((await signIn("client@example.test", "wrong password!!")).status).toBe(401);
+  });
+
+  it("reports when the invite email didn't actually go out", async () => {
+    const brand = await makeBrand(env);
+    const owner = await makeUser(env, "owner");
+    const email = await import("@/lib/email");
+    vi.spyOn(email, "sendEmail").mockResolvedValueOnce(false);
+    const res = await createInvite(env.ctx(owner), { email: "nomail@example.test", role: "client", brandIds: [brand.id] }, APP);
+    expect(res.emailed).toBe(false);
+    expect(res.url).toContain("/invite/");
   });
 
   it("closes open sign-up", async () => {

@@ -65,15 +65,14 @@ export async function createInvite(ctx: Ctx, input: z.input<typeof inviteSchema>
   });
 
   const url = `${appUrl.replace(/\/$/, "")}/invite/${token}`;
-  let emailed = true;
+  let emailed = false;
   try {
-    await sendEmail({
+    emailed = await sendEmail({
       to: data.email,
       subject: "You're invited to Social Planner",
       ...actionEmail({ heading: "You're invited", body: `You've been invited to Social Planner as ${data.role}. Set your password to get started. The link expires in 7 days.`, cta: "Accept invite", url }),
     });
   } catch (err) {
-    emailed = false;
     ctx.log.warn({ inviteId: invite.id, err: err instanceof Error ? err.message : String(err) }, "invite email failed; share the link by hand");
   }
   return { invite: inviteView(invite), url, emailed };
