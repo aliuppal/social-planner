@@ -45,21 +45,32 @@ export const slugSchema = z
   .max(60)
   .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "lowercase letters, digits and dashes, e.g. uppal-nq1");
 
-export const createBrandSchema = z.object({
+const brandFields = {
   name: z.string().min(1).max(120),
-  slug: slugSchema,
-  timezone: timezoneSchema.default("Asia/Karachi"),
+  timezone: timezoneSchema,
   instagramHandle: z
     .string()
     .regex(/^@?[A-Za-z0-9._]{1,30}$/, "Instagram username like @uppal.nq1")
-    .transform((h) => h.replace(/^@/, ""))
-    .optional(),
-  color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
-  guidelines: brandGuidelinesSchema.default({}),
-  postingSlots: z.array(postingSlotSchema).max(50).default([]),
-  requiresApproval: z.boolean().default(true),
-  clientsCanSchedule: z.boolean().default(false),
+    .transform((h) => h.replace(/^@/, "")),
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  guidelines: brandGuidelinesSchema,
+  postingSlots: z.array(postingSlotSchema).max(50),
+  requiresApproval: z.boolean(),
+  clientsCanSchedule: z.boolean(),
+};
+
+export const createBrandSchema = z.object({
+  ...brandFields,
+  slug: slugSchema,
+  timezone: brandFields.timezone.default("Asia/Karachi"),
+  instagramHandle: brandFields.instagramHandle.optional(),
+  color: brandFields.color.optional(),
+  guidelines: brandFields.guidelines.default({}),
+  postingSlots: brandFields.postingSlots.default([]),
+  requiresApproval: brandFields.requiresApproval.default(true),
+  clientsCanSchedule: brandFields.clientsCanSchedule.default(false),
 });
 export type CreateBrandInput = z.input<typeof createBrandSchema>;
 
-export const updateBrandSchema = createBrandSchema.omit({ slug: true }).partial();
+/** Partial update: only the fields sent are changed. Built without defaults (Zod 4 applies defaults inside .partial()). */
+export const updateBrandSchema = z.object(brandFields).partial();

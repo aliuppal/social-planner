@@ -20,6 +20,16 @@ export function getDb(): Db {
   if (cached) return cached;
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL is not set (see .env.example)");
+  const host = new URL(url).hostname;
+  if (host === "127.0.0.1" || host === "localhost") {
+    // local development database (pnpm dev:db): plain node-postgres
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { Pool: PgPool } = require("pg") as typeof import("pg");
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { drizzle: drizzlePg } = require("drizzle-orm/node-postgres") as typeof import("drizzle-orm/node-postgres");
+    cached = drizzlePg({ client: new PgPool({ connectionString: url, max: 5 }), schema }) as unknown as Db;
+    return cached;
+  }
   if (typeof WebSocket === "undefined") {
     // Node < 22 has no global WebSocket
     // eslint-disable-next-line @typescript-eslint/no-require-imports

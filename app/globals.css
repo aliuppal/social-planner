@@ -182,6 +182,42 @@
   }
 }
 
+/* ---------- FullCalendar, themed with inqi tokens ---------- */
+.planner-calendar .fc {
+  --fc-border-color: var(--line);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: var(--inset);
+  --fc-today-bg-color: var(--acc-soft);
+  --fc-now-indicator-color: var(--acc2);
+  --fc-list-event-hover-bg-color: var(--accent);
+  --fc-button-bg-color: var(--secondary);
+  --fc-button-border-color: var(--glass-edge);
+  --fc-button-text-color: var(--ink);
+  --fc-button-hover-bg-color: var(--accent);
+  --fc-button-hover-border-color: var(--glass-edge);
+  --fc-button-active-bg-color: var(--acc);
+  --fc-button-active-border-color: var(--acc);
+  --fc-event-border-color: transparent;
+  font-size: 13px;
+  color: var(--ink);
+}
+.planner-calendar .fc .fc-toolbar { flex-wrap: wrap; gap: 8px; }
+.planner-calendar .fc .fc-toolbar-title { font-size: 17px; font-weight: 600; }
+.planner-calendar .fc .fc-button { border-radius: 99px; min-height: 40px; padding: 0 14px; text-transform: none; box-shadow: none; font-weight: 500; }
+.planner-calendar .fc .fc-button-primary:not(:disabled).fc-button-active { color: var(--on-acc); }
+.planner-calendar .fc .fc-button-group > .fc-button { border-radius: 99px; margin-left: 4px; }
+.planner-calendar .fc .fc-button:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+.planner-calendar .fc .fc-col-header-cell-cushion,
+.planner-calendar .fc .fc-daygrid-day-number { color: var(--mute); font-weight: 500; }
+.planner-calendar .fc .fc-scrollgrid { border-radius: 16px; overflow: hidden; }
+.planner-calendar .fc .fc-daygrid-event,
+.planner-calendar .fc .fc-timegrid-event { border-radius: 10px; border-left-width: 3px; border-left-style: solid; margin-bottom: 2px; }
+.planner-calendar .fc .fc-list { border-radius: 16px; }
+.planner-calendar .fc .fc-list-day-cushion { background: var(--inset); }
+.planner-calendar .fc .fc-list-event-dot { display: none; }
+.planner-calendar .fc .fc-daygrid-more-link { color: var(--acc); }
+.planner-calendar .fc .fc-popover { background: var(--popover); border-color: var(--glass-edge); border-radius: 16px; }
+
 /* inqi glass surface: use on cards, dock, dialogs */
 @utility glass {
   background-color: var(--card);
