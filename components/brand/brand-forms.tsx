@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { cn } from "cn";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FormMessage } from "@/components/auth/field";
 import { fieldCls } from "@/components/post/field-styles";
-import { createBrandAction, createCalendarAction, updateBrandAction, updateCalendarAction, updateGuidelinesAction, type ActionResult } from "@/app/(app)/actions";
+import { createBrandAction, createCalendarAction, disconnectInstagramAction, updateBrandAction, updateCalendarAction, updateGuidelinesAction, type ActionResult } from "@/app/(app)/actions";
 import type { BrandGuidelines, PostingSlot } from "@/lib/schemas/brand";
 import { WEEKDAYS } from "@/lib/ui/meta";
 
@@ -364,6 +364,35 @@ export function GuidelinesForm({ brandId, guidelines: g, canWrite }: { brandId: 
       </form>
     </Section>
   );
+}
+
+// ---------- Instagram connection ----------
+
+export function InstagramConnect({ brandId, connected }: { brandId: string; connected: boolean }) {
+  const { pending, error, act } = useAct();
+  return (
+    <div className="mt-3 flex flex-wrap gap-2">
+      {error && <FormMessage>{error}</FormMessage>}
+      <Button size="sm" render={<a href={`/api/instagram/connect?brand=${brandId}`} />}>
+        {connected ? "Reconnect Instagram" : "Connect Instagram"}
+      </Button>
+      {connected && (
+        <Button size="sm" variant="ghost" disabled={pending} onClick={() => confirm("Disconnect Instagram? Scheduled posts won't publish until it's reconnected.") && act(() => disconnectInstagramAction(brandId), "Disconnected")}>
+          Disconnect
+        </Button>
+      )}
+    </div>
+  );
+}
+
+/** Result of the OAuth round-trip (?ig=connected|error|cancelled&message=…). */
+export function InstagramNotice() {
+  const params = useSearchParams();
+  const ig = params.get("ig");
+  if (!ig) return null;
+  const message = params.get("message");
+  if (ig === "connected") return <FormMessage tone="success">Instagram connected.{message ? ` ${message}` : ""}</FormMessage>;
+  return <FormMessage>{ig === "forbidden" ? "You can't change this brand's Instagram connection." : (message ?? "Instagram connection failed.")}</FormMessage>;
 }
 
 // ---------- custom calendars ----------

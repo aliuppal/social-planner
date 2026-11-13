@@ -149,6 +149,11 @@ export async function updateCalendarAction(input: Parameters<typeof calendars.up
   return run((ctx) => calendars.updateCalendar(ctx, input));
 }
 
+export async function disconnectInstagramAction(brandId: string) {
+  const { disconnectAccount } = await import("@/lib/services/instagram");
+  return run((ctx) => disconnectAccount(ctx, brandId));
+}
+
 // ---------- API clients (owner) ----------
 
 export async function createApiClientAction(input: { name: string; source: "hermes" | "inqi" | "api"; scopes: Scope[]; brandIds: string[] | "all" }) {

@@ -6,7 +6,7 @@ import { can } from "@/lib/auth/guard";
 import { requireActor, userCtx } from "@/lib/auth/session";
 import { getAccessibleBrand, getBrand, getBrandStatus } from "@/lib/services/brands";
 import { listCalendars } from "@/lib/services/calendars";
-import { BrandSettingsForm, CalendarsManager, GuidelinesForm, SlotsEditor } from "@/components/brand/brand-forms";
+import { BrandSettingsForm, CalendarsManager, GuidelinesForm, InstagramConnect, InstagramNotice, SlotsEditor } from "@/components/brand/brand-forms";
 
 export const metadata: Metadata = { title: "Brand · Social Planner" };
 
@@ -35,6 +35,7 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
         </Link>
       </div>
 
+      <InstagramNotice />
       <section aria-labelledby="status-h" className="glass grid gap-4 rounded-[22px] p-5">
         <h2 id="status-h" className="font-medium">
           Status
@@ -57,10 +58,12 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
                 </>
               ) : (
                 <>
-                  <p className="font-medium">Instagram not connected</p>
-                  <p className="text-muted-foreground">Connecting {brand.instagramHandle ?? "the account"} arrives with publishing in phase 5. Until then posts can be planned and approved but not published.</p>
+                  <p className="font-medium">Instagram {"status" in ig && ig.status !== "not_connected" ? ig.status : "not connected"}</p>
+                  <p className="text-muted-foreground">Connect {brand.instagramHandle ?? "the account"} (a professional account) so scheduled posts publish automatically.</p>
+                  {"lastError" in ig && ig.lastError && <p className="mt-1 text-destructive">{ig.lastError}</p>}
                 </>
               )}
+              {canWrite && <InstagramConnect brandId={brand.id} connected={ig.connected} />}
             </div>
           </div>
           <dl className="grid grid-cols-4 gap-2 text-center">
